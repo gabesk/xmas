@@ -1,0 +1,56 @@
+# LED
+set_io --warn-no-port leds[0] 85
+set_io --warn-no-port leds[1] 86
+set_io --warn-no-port leds[2] 82
+set_io --warn-no-port leds[3] 83
+set_io --warn-no-port leds[4] 78
+set_io --warn-no-port leds[5] 79
+set_io --warn-no-port leds[6] 80
+set_io --warn-no-port leds[7] 81
+set_io --warn-no-port leds[8] 52
+set_io --warn-no-port leds[9] 51
+set_io --warn-no-port leds[10] 65
+set_io --warn-no-port leds[11] 64
+set_io --warn-no-port leds[12] 18
+set_io --warn-no-port leds[13] 19
+set_io --warn-no-port leds[14] 42
+set_io --warn-no-port leds[15] 41
+set_io --warn-no-port leds[16] 54
+set_io --warn-no-port leds[17] 53
+set_io --warn-no-port leds[18] 63
+set_io --warn-no-port leds[19] 62
+set_io --warn-no-port leds[20] 20
+set_io --warn-no-port leds[21] 21
+set_io --warn-no-port leds[22] 40
+set_io --warn-no-port leds[23] 37
+
+set_io --warn-no-port clk_fast 34
+
+#set_io --warn-no-port clk 13 # this one is the extra pin
+#set_io --warn-no-port clk 45 # this is mosi or some shit when i was feeding it from the avr
+
+set_io --warn-no-port clk_slow 33
+set_io --warn-no-port clk_fast_en 30
+
+set_io --warn-no-port vusb_half 59
+
+set_io --warn-no-port rx 57
+set_io --warn-no-port tx 56
+
+set_io --warn-no-port user_io[0] 15
+set_io --warn-no-port user_io[1] 10
+set_io --warn-no-port user_io[2] 12
+set_io --warn-no-port user_io[3] 8
+set_io --warn-no-port user_io[4] 13
+set_io --warn-no-port user_io[5] 9
+
+set_io --warn-no-port ble_rxi 90
+set_io --warn-no-port ble_txo 89
+
+set_io --warn-no-port esp_rxi 74
+set_io --warn-no-port esp_txo 73
+
+set_io --warn-no-port cs_n 49
+set_io --warn-no-port sclk 48
+set_io --warn-no-port mosi 45
+set_io --warn-no-port miso 46
