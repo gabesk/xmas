@@ -13,15 +13,17 @@ REM
 REM     make_hdl.bat top_module file1.v file2.v file3.v
 REM 
 
-SET ICESTORM_TOOLCHAIN=%HOMEDRIVE%\%HOMEPATH%\.apio\packages\toolchain-icestorm\bin
+SET ICESTORM_TOOLCHAIN=%HOMEDRIVE%\%HOMEPATH%\.apio\packages\toolchain-ice40\bin
+SET YOSYS_TOOLCHAIN=%HOMEDRIVE%\%HOMEPATH%\.apio\packages\toolchain-yosys\bin
 
 IF NOT EXIST %ICESTORM_TOOLCHAIN% GOTO NOT_FOUND_ERROR
+IF NOT EXIST %YOSYS_TOOLCHAIN% GOTO NOT_FOUND_ERROR
 
 ECHO ###############################################################################
-ECHO yosys -p "synth_ice40 -blif hardware.blif -top %1" -q -l synth_log.txt %2 %3 %4
+ECHO yosys -p "synth_ice40 -json hardware.json -top %1" -q -l synth_log.txt %2 %3 %4
 ECHO ###############################################################################
 ECHO.
-%ICESTORM_TOOLCHAIN%\yosys -p "synth_ice40 -blif hardware.blif -top %1" -q -l synth_log.txt %2 %3 %4
+%YOSYS_TOOLCHAIN%\yosys -p "synth_ice40 -json hardware.json -top %1" -q -l synth_log.txt %2 %3 %4
 IF %ERRORLEVEL% NEQ 0 GOTO CMD_ERROR
 
 SET IN_STATS="0"
@@ -35,10 +37,10 @@ FOR /F "delims=" %%l IN (synth_log.txt) DO (
 
 ECHO.
 ECHO ###############################################################################
-ECHO arachne-pnr -d 1k -P vq100 -p pins.pcf -o hardware.asc hardware.blif
+ECHO nextpnr-ice40 --hx1k --package vq100 --pcf pins.pcf --asc hardware.asc --json hardware.json
 ECHO ###############################################################################
 ECHO.
-%ICESTORM_TOOLCHAIN%\arachne-pnr -d 1k -P vq100 -p pins.pcf -o hardware.asc hardware.blif
+%ICESTORM_TOOLCHAIN%\nextpnr-ice40 --hx1k --package vq100 --pcf pins.pcf --asc hardware.asc --json hardware.json
 IF %ERRORLEVEL% NEQ 0 GOTO CMD_ERROR
 
 ECHO.
