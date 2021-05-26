@@ -3,12 +3,13 @@ import sys
 import serial
 import struct
 import random
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("com_port", help="The com port of the FPGA (ex: 'COM3:')")
 parser.add_argument("prom_file", help="The BIN prom file to program")
 args = parser.parse_args()
-ser = serial.Serial(args.com_port, 115200, timeout=1)
+ser = serial.Serial(args.com_port, 115200, timeout=2)
 
 def write_byte(num):
     byte = struct.pack('B', int(num))
@@ -168,7 +169,7 @@ def test():
 def put_fpga_into_reset():
     ser.write(b'q')
     b = ser.read()
-    print(repr(b))
+    #print(repr(b))
     assert b == b'q'
 
 def put_fpga_out_of_reset():
@@ -200,7 +201,7 @@ def put_avr_into_passthrough_mode():
     ser.write(b'z')
     b = ser.read()
     print(repr(b))
-    # TODO Not sure why this doesn't work; probably need a deal
+    # TODO Not sure why this doesn't work; probably need a dealy
     assert b == b'z'
 
 def program_xilinx_bin_file(binfile):
@@ -223,12 +224,6 @@ def program_xilinx_bin_file(binfile):
 #    print('Sending break')
 #    ser.send_break()
 #    ser.write(b'?')
-    b = ser.read()
-    print(repr(b))
-    b = ser.read()
-    print(repr(b))
-    b = ser.read()
-    print(repr(b))
     b = ser.read()
     print(repr(b))
 
@@ -283,7 +278,6 @@ def test2(binfile):
 #while True:
 #    print(repr(validate_id()))
 program_xilinx_bin_file(args.prom_file)
-
 #test2(args.prom_file)
 #put_fpga_into_reset()
 #release_spi_flash_from_power_down()
