@@ -41,10 +41,6 @@ module uart_rx(input clk, input rx, output rx_done, output reg [7:0] rx_byte = 0
     wire tick16 = clk16[oversample_width];
     always @ (posedge clk) clk16 <= clk16[oversample_width-1:0] + 1;
 
-    // potentially cheaper alternative depending on how good the optimizer is if
-    // baud rate is power of 2 of incoming clock rate
-    //wire tick16 = clk16[3];
-
     // From the 16x oversample tick, divide by 16 to generate the bit sample.
     // (This ticker has the ability to start halfway so that after a start is detected, subsequent ticks
     //  line up halfway in the middle of the next bit.)
