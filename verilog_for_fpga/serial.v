@@ -1,24 +1,22 @@
 `timescale 1ns / 1ps
 
+parameter UART_SPEED = 115200;
+parameter CLK_FREQUENCY = 14745600;
+
 module uart_tx(input clk, input [7:0] tx_byte, input go, output busy, output tx);
+    
+    parameter baud_div_width = $clog2(CLK_FREQUENCY / UART_SPEED);
     
     // Sending is easier than transmitting because there's no need to oversample.
     // Just generate a tick at the baud rate, and when go is sent load the bit to be transmitted.
-    reg [8:0] baud_div = 0;
-    reg tick = 0;
-    always @ (posedge clk) begin
-        if (go) begin
+    // the +1 is to take the carry output of the adder as the tick signal
+    reg [baud_div_width:0] baud_div = 0;
+    wire tick = baud_div[baud_div_width];
+    always @ (posedge clk)
+        if (go)
             baud_div <= 0;
-            tick <= 0;        
-        end
-        else if (baud_div == 383) begin
-            baud_div <= 0;
-            tick <= 1;
-        end else begin
-            baud_div <= baud_div + 1;
-            tick <= 0;
-        end
-    end
+        else
+            baud_div <= baud_div[baud_div_width-1:0] + 1;
 
     reg [3:0] busy_counter = 0;
     assign busy = busy_counter != 0;
@@ -36,20 +34,12 @@ endmodule
 module uart_rx(input clk, input rx, output rx_done, output reg [7:0] rx_byte = 0);
 
     wire start;
-
-    // From a 14.7456 Mhz input clock, divide by 24 to generate a 16x oversample.
-    // (For 38400 baud)
-    reg [4:0] clk16 = 0;
-    reg tick16 = 0;
-    always @ (posedge clk) begin
-        if (clk16 == 23) begin
-            clk16 <= 0;
-            tick16 <= 1;
-        end else begin
-            clk16 <= clk16 + 1;
-            tick16 <= 0;
-        end
-    end
+    parameter oversample_width = $clog2(CLK_FREQUENCY / UART_SPEED / 16);
+    
+    // From a 14.74 clock, divide by 8 to gen 16x oversample for 115200.
+    reg [oversample_width:0] clk16 = 0;
+    wire tick16 = clk16[oversample_width];
+    always @ (posedge clk) clk16 <= clk16[oversample_width-1:0] + 1;
 
     // potentially cheaper alternative depending on how good the optimizer is if
     // baud rate is power of 2 of incoming clock rate
